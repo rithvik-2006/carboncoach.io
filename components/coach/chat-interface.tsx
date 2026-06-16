@@ -10,6 +10,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Leaf, Send, User, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 const SUGGESTED_PROMPTS = [
   'What are my biggest carbon sources this month?',
@@ -26,79 +28,6 @@ function getUIMessageText(msg: { parts?: { type: string; text?: string }[] }): s
     .join('')
 }
 
-/**
- * A highly-performant, structural Markdown formatter targeting headings, 
- * code chips, list segments, bold keywords, and clean spacing.
- */
-function RenderMarkdown({ content }: { content: string }) {
-  const lines = content.split('\n')
-
-  return (
-    <div className="space-y-2 text-sm leading-relaxed tracking-normal">
-      {lines.map((line, idx) => {
-        let currentLine = line
-
-        // 1. Process Headings
-        if (currentLine.startsWith('### ')) {
-          return (
-            <h4 key={idx} className="text-base font-bold text-foreground mt-4 mb-1 tracking-tight first:mt-0">
-              {currentLine.replace('### ', '')}
-            </h4>
-          )
-        }
-        if (currentLine.startsWith('## ')) {
-          return (
-            <h3 key={idx} className="text-lg font-extrabold text-foreground mt-5 mb-1.5 tracking-tight first:mt-0">
-              {currentLine.replace('## ', '')}
-            </h3>
-          )
-        }
-
-        // 2. Structural Unordered Lists
-        const isListItem = currentLine.startsWith('* ') || currentLine.startsWith('- ')
-        if (isListItem) {
-          currentLine = currentLine.substring(2)
-        }
-
-        // 3. Formatter Logic Array Loop for Inline Bold/Code Items
-        const parts = currentLine.split(/(\*\*.*?\*\*|`.*?`)/g)
-        const renderedLine = parts.map((part, pIdx) => {
-          if (part.startsWith('**') && part.endsWith('**')) {
-            return (
-              <strong key={pIdx} className="font-semibold text-foreground dark:text-white">
-                {part.slice(2, -2)}
-              </strong>
-            )
-          }
-          if (part.startsWith('`') && part.endsWith('`')) {
-            return (
-              <code key={pIdx} className="px-1.5 py-0.5 rounded bg-foreground/10 text-xs font-mono font-medium text-primary">
-                {part.slice(1, -1)}
-              </code>
-            )
-          }
-          return part
-        })
-
-        if (isListItem) {
-          return (
-            <div key={idx} className="flex items-start gap-2 pl-2 my-1">
-              <span className="text-primary select-none mt-1.5 size-1.5 rounded-full bg-primary shrink-0" />
-              <span className="flex-1">{renderedLine}</span>
-            </div>
-          )
-        }
-
-        // 4. Return standard plain text lines if safe
-        if (currentLine.trim() === '') {
-          return <div key={idx} className="h-2" />
-        }
-
-        return <p key={idx}>{renderedLine}</p>
-      })}
-    </div>
-  )
-}
 
 export function ChatInterface() {
   const [input, setInput] = useState('')
@@ -224,7 +153,11 @@ export function ChatInterface() {
                     {isUser ? (
                       <p className="whitespace-pre-wrap leading-relaxed">{text}</p>
                     ) : (
-                      <RenderMarkdown content={text} />
+                      <div className="prose dark:prose-invert prose-sm max-w-none break-words leading-relaxed tracking-normal marker:text-primary prose-headings:text-foreground prose-p:text-muted-foreground dark:prose-p:text-zinc-200 prose-th:text-foreground prose-td:text-muted-foreground dark:prose-td:text-zinc-200 prose-strong:text-foreground">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {text}
+                        </ReactMarkdown>
+                      </div>
                     )}
                   </div>
                 </div>

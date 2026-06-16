@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { ActivityWithCarbon } from '@/lib/carbon/carbon-engine'
 import { mapToDatabaseActivities } from '@/lib/carbon/activity-mapper'
 import { generateRecommendations } from '@/lib/ai/recommendation-engine'
+import { calculateAndStoreGlobalReduction } from '@/lib/carbon/global-reduction-engine'
 
 export async function confirmScanAction(activitiesWithCarbon: ActivityWithCarbon[]) {
   const supabase = await createClient()
@@ -37,11 +38,31 @@ export async function confirmScanAction(activitiesWithCarbon: ActivityWithCarbon
   )
 
   // 3. Insert into database
-  const { error: insertError } = await supabase.from('activities').insert(dbActivities)
+  const { data: insertedActivities, error: insertError } = await supabase
+    .from('activities')
+    .insert(dbActivities)
+    .select()
 
   if (insertError) {
     console.error("Failed to insert activities:", insertError)
     throw new Error('Failed to save activities')
+  }
+
+  // Calculate reductions for each inserted activity
+  if (insertedActivities) {
+    const idToName = Object.fromEntries(
+      Object.entries(categoriesMap).map(([k, v]) => [v, k])
+    )
+    for (const act of insertedActivities) {
+      const categoryName = idToName[act.category_id] || 'Other'
+      await calculateAndStoreGlobalReduction(
+        user.id,
+        act.id,
+        categoryName,
+        Number(act.co2_kg),
+        act.description
+      )
+    }
   }
 
   // 4. Generate recommendations

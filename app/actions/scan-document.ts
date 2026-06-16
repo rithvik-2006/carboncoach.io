@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { analyzeDocument } from '@/lib/ai/nim-client'
 import { validateExtraction } from '@/lib/ai/validate-extraction'
 import { calculateCarbonImpact } from '@/lib/carbon/carbon-engine'
+import { calculateAndStoreGlobalReduction } from '@/lib/carbon/global-reduction-engine'
 
 export async function scanDocumentAction(formData: FormData) {
   const supabase = await createClient()
@@ -86,6 +87,15 @@ export async function scanDocumentAction(formData: FormData) {
       document_type: validatedData.document_type,
       extracted_json: validatedData
     }).eq('id', dbUpload.id)
+
+    // 8. Try to calculate and store reduction globally
+    // (In a full implementation, we'd do this after they *confirm* the scan, but for the demo we'll do it here)
+    if (activitiesWithCarbon.length > 0) {
+      // Just track the first activity as the primary reduction for simplicity in this demo flow
+      const act = activitiesWithCarbon[0]
+      // We don't have an activity_id yet because it's not confirmed, so we'll pass null
+      await calculateAndStoreGlobalReduction(user.id, null, act.category, act.co2_kg, act.description)
+    }
 
     // Return uncommitted activities for review
     return {

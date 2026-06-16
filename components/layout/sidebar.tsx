@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { LayoutDashboard, PlusCircle, Bot, LogOut, Leaf, Settings, ScanLine } from 'lucide-react'
+import { LayoutDashboard, PlusCircle, Bot, LogOut, Leaf, Settings, ScanLine, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator'
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/community', label: 'Community', icon: Trophy },
   { href: '/log', label: 'Log Activity', icon: PlusCircle },
   { href: '/dashboard/scan', label: 'AI Scan', icon: ScanLine },
   { href: '/coach', label: 'AI Coach', icon: Bot },

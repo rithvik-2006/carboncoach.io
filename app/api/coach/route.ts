@@ -99,10 +99,15 @@
 //   return result.toUIMessageStreamResponse()
 // }
 import { streamText, convertToModelMessages } from 'ai'
-import { google } from '@ai-sdk/google' // Swapped provider here
+import { createOpenAI } from '@ai-sdk/openai'
 import { createClient } from '@/lib/supabase/server'
 import type { UIMessage } from 'ai'
 import { startOfMonth, endOfMonth, subMonths } from 'date-fns'
+
+const nvidia = createOpenAI({
+  baseURL: 'https://integrate.api.nvidia.com/v1',
+  apiKey: process.env.NVIDIA_API_KEY,
+})
 
 export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json()
@@ -173,8 +178,7 @@ USER CONTEXT:
   }
 
   const result = streamText({
-    // Configured for Gemini 2.5 Flash
-    model: google('gemini-2.5-flash'), 
+    model: nvidia('openai/gpt-oss-20b'),
     system: `You are Carbon Coach, an expert AI sustainability advisor. You help users understand and reduce their personal carbon footprint.
 
 Your personality:
@@ -194,7 +198,7 @@ When giving advice:
 
 Never make up data about the user. If no context is available, give general evidence-based carbon reduction advice.`,
     messages: await convertToModelMessages(messages),
-    maxOutputTokens: 1024, // Field changed from maxOutputTokens to maxTokens in VAI SDK core
+    maxTokens: 1024,
   })
 
   return result.toUIMessageStreamResponse()

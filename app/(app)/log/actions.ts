@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { calculateAndStoreGlobalReduction } from '@/lib/carbon/global-reduction-engine'
 
 interface LogActivityInput {
   categoryId: number | string
@@ -30,6 +31,24 @@ export async function logActivity(payload: LogActivityInput) {
       logged_at: payload.loggedAt,
     })
     .select()
+
+  if (result.data && result.data[0]) {
+    const activity = result.data[0]
+    const { data: categoryData } = await supabase
+      .from('categories')
+      .select('name')
+      .eq('id', payload.categoryId)
+      .single()
+    const categoryName = categoryData?.name || 'Other'
+
+    await calculateAndStoreGlobalReduction(
+      user.id,
+      activity.id,
+      categoryName,
+      Number(activity.co2_kg),
+      activity.description
+    )
+  }
 
   revalidatePath('/dashboard')
   revalidatePath('/log')

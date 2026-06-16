@@ -3,12 +3,13 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { LayoutDashboard, PlusCircle, Bot, ScanLine } from 'lucide-react'
+import { LayoutDashboard, PlusCircle, Bot, LogOut, Leaf, Menu, Settings, ScanLine, Trophy } from 'lucide-react'
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/log', label: 'Log', icon: PlusCircle },
-  { href: '/dashboard/scan', label: 'Scan', icon: ScanLine },
+  { href: '/community', label: 'Community', icon: Trophy },
+  { href: '/log', label: 'Log Activity', icon: PlusCircle },
+  { href: '/dashboard/scan', label: 'AI Scan', icon: ScanLine },
   { href: '/coach', label: 'Coach', icon: Bot },
 ]
 
