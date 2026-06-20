@@ -1,6 +1,13 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+/**
+ * Updates the user session and enforces page protection / authentication middleware routing.
+ * Ensures unauthenticated users are redirected to login, and authenticated users are kept away from auth paths.
+ * 
+ * @param {NextRequest} request - The incoming Next.js API/Page request.
+ * @returns {Promise<NextResponse>} The updated HTTP middleware response (redirect or next response).
+ */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 

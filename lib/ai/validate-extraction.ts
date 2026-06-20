@@ -5,7 +5,7 @@ export const ExtractedActivitySchema = z.object({
   description: z.string().min(1, "Description is required"),
   amount: z.number().positive("Amount must be positive"),
   unit: z.string(),
-  metadata: z.record(z.string(), z.any()).optional().default({}),
+  metadata: z.record(z.string(), z.unknown()).optional().default({}),
 })
 
 export const ExtractionResponseSchema = z.object({
@@ -16,6 +16,13 @@ export const ExtractionResponseSchema = z.object({
 export type ExtractedActivity = z.infer<typeof ExtractedActivitySchema>
 export type ExtractionResponse = z.infer<typeof ExtractionResponseSchema>
 
+/**
+ * Validates document extraction data against the ExtractionResponseSchema.
+ * If validation fails, it catches the error and returns a safe fallback object.
+ * 
+ * @param {unknown} data - The raw output payload to validate.
+ * @returns {ExtractionResponse} The validated extraction object or a safe default.
+ */
 export function validateExtraction(data: unknown): ExtractionResponse {
   try {
     return ExtractionResponseSchema.parse(data)

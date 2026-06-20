@@ -33,7 +33,7 @@ export async function scanDocumentAction(formData: FormData) {
   const fileName = `${crypto.randomUUID()}.${fileExt}`
   const filePath = `${user.id}/${fileName}`
 
-  const { data: uploadData, error: uploadError } = await supabase.storage
+  const { error: uploadError } = await supabase.storage
     .from('uploads')
     .upload(filePath, file)
 
@@ -69,8 +69,6 @@ export async function scanDocumentAction(formData: FormData) {
     const arrayBuffer = await file.arrayBuffer()
     const base64 = Buffer.from(arrayBuffer).toString('base64')
     const dataUrl = `data:${file.type};base64,${base64}`
-
-    console.log(`[Base64] Converted image of size ${Math.round(file.size / 1024)} KB in memory`)
 
     // 4. Analyze Document via NIM
     const rawExtraction = await analyzeDocument(dataUrl)

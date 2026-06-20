@@ -1,6 +1,12 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
+/**
+ * Creates and returns a Supabase server client that handles cookie management.
+ * Utilizes the asynchronous next/headers cookie store.
+ * 
+ * @returns {Promise<SupabaseClient>} A promise that resolves to the Supabase server client.
+ */
 export async function createClient() {
   const cookieStore = await cookies()
 

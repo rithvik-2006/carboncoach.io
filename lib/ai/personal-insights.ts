@@ -7,6 +7,13 @@ Highlight their biggest contributor category, their rank, or recommend a targete
 Keep it strictly under 3 sentences. Tone should be motivating and professional.
 Do not use markdown formatting or asterisks.`
 
+/**
+ * Generates personal sustainability insights for a user by analyzing their carbon reductions and achievements.
+ * Interacts with NVIDIA's meta/llama-3.1-8b-instruct NIM.
+ * 
+ * @param {string} userId - The unique identifier of the user.
+ * @returns {Promise<string | null>} The generated insight string, or null if generation fails or the user is not found.
+ */
 export async function generatePersonalInsight(userId: string) {
   const supabase = await createClient()
 
@@ -18,16 +25,18 @@ export async function generatePersonalInsight(userId: string) {
   if (!profile) return null
 
   // Calculate some stats
-  const totalSaved = reductions?.reduce((sum, r) => sum + Number(r.reduction_amount), 0) || 0
-  const categories = reductions?.reduce((acc: any, r) => {
-    acc[r.category] = (acc[r.category] || 0) + Number(r.reduction_amount)
+  const totalSaved = reductions?.reduce((sum, r) => sum + Number((r as { reduction_amount: number }).reduction_amount), 0) || 0
+  const categories = (reductions || []).reduce<Record<string, number>>((acc, r) => {
+    const category = (r as { category: string }).category
+    const amount = Number((r as { reduction_amount: number }).reduction_amount)
+    acc[category] = (acc[category] || 0) + amount
     return acc
-  }, {})
+  }, {} as Record<string, number>)
 
   const contextData = {
     userName: profile.display_name,
     totalSavedThisPeriod: totalSaved,
-    recentAchievements: achievements?.map(a => a.badge_name),
+    recentAchievements: achievements?.map(a => (a as { badge_name: string }).badge_name),
     savingsByCategory: categories,
     // Note: To pass true rank we would query the leaderboard logic here, 
     // but we can omit for simplicity or let the AI make a general encouraging statement based on their totals.

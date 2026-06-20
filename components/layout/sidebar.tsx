@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { LayoutDashboard, PlusCircle, Bot, LogOut, Leaf, Settings, ScanLine, Trophy } from 'lucide-react'
+import { LayoutDashboard, PlusCircle, Bot, LogOut, Leaf, ScanLine, Trophy } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'

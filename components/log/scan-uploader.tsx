@@ -112,7 +112,6 @@ export function ScanUploader({ onFileSelect }: ScanUploaderProps) {
         <div className="overflow-hidden rounded-xl border border-border bg-card">
           <div className="relative aspect-video w-full bg-muted/30 flex items-center justify-center">
             {preview ? (
-              // eslint-disable-next-line @next/next/no-img-element
               <Image src={preview} alt="Preview" fill className="object-contain" />
             ) : (
               <ImageIcon className="size-12 text-muted-foreground" />

@@ -6,6 +6,13 @@ export interface ActivityWithCarbon extends ExtractedActivity {
 
 // Simple deterministic fallback emissions engine based on user requirements.
 // For a production system this would query a complex emission factor DB.
+/**
+ * Calculates carbon emissions (in kg CO2e) for a list of extracted activities.
+ * Uses deterministic multipliers matching the application context.
+ * 
+ * @param {ExtractedActivity[]} activities - The array of validated extracted activities.
+ * @returns {ActivityWithCarbon[]} The array of activities updated with their calculated CO2e impact.
+ */
 export function calculateCarbonImpact(activities: ExtractedActivity[]): ActivityWithCarbon[] {
   return activities.map(activity => {
     let co2_kg = 0

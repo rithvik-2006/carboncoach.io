@@ -1,5 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 
+/**
+ * Fetches and aggregates the leaderboard showing cumulative savings for all communities.
+ * 
+ * @returns {Promise<any[]>} Sorted community leaderboard entries.
+ */
 export async function getCommunityLeaderboard() {
   const supabase = await createClient()
 

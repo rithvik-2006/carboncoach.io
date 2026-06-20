@@ -15,7 +15,7 @@ interface ScanReviewProps {
 export function ScanReview({ initialActivities, onConfirm, isSubmitting }: ScanReviewProps) {
   const [activities, setActivities] = useState<ActivityWithCarbon[]>(initialActivities)
 
-  const handleUpdate = (index: number, field: keyof ActivityWithCarbon, value: any) => {
+  const handleUpdate = <K extends keyof ActivityWithCarbon>(index: number, field: K, value: ActivityWithCarbon[K]) => {
     const updated = [...activities]
     updated[index] = { ...updated[index], [field]: value }
     setActivities(updated)

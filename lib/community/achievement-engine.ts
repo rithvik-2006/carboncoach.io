@@ -10,7 +10,16 @@ const THRESHOLDS = [
   { amount: 5000, name: 'First 5000kg Saved', description: 'Your community has saved 5000kg of CO₂!' },
 ]
 
+/**
+ * Community achievement tracking engine. Computes total savings for a community and unlocks achievements.
+ */
 export const achievementEngine = {
+  /**
+   * Checks the community's cumulative savings against milestones, unlocks achievements, and logs them to the feed.
+   * 
+   * @param {string} communityId - The unique identifier of the community to check.
+   * @returns {Promise<void>}
+   */
   async checkAndUnlockAchievements(communityId: string) {
     const supabase = await createClient()
 

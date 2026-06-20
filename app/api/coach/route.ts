@@ -127,7 +127,7 @@ export async function POST(req: Request) {
     const lastMonthStart = startOfMonth(subMonths(now, 1))
     const lastMonthEnd = endOfMonth(subMonths(now, 1))
 
-    const [profileRes, thisMonthRes, lastMonthRes, topCatsRes] = await Promise.all([
+    const [profileRes, thisMonthRes, lastMonthRes] = await Promise.all([
       supabase.from('profiles').select('monthly_goal_kg, display_name').eq('id', user.id).single(),
       supabase
         .from('activities')
@@ -141,13 +141,6 @@ export async function POST(req: Request) {
         .eq('user_id', user.id)
         .gte('logged_at', lastMonthStart.toISOString())
         .lte('logged_at', lastMonthEnd.toISOString()),
-      supabase
-        .from('activities')
-        .select('co2_kg, categories(name)')
-        .eq('user_id', user.id)
-        .gte('logged_at', monthStart.toISOString())
-        .order('co2_kg', { ascending: false })
-        .limit(5),
     ])
 
     const profile = profileRes.data

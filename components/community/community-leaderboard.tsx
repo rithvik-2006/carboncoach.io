@@ -15,7 +15,7 @@ export function CommunityLeaderboard({ initialData }: { initialData: Leaderboard
   useEffect(() => {
     // 1. Subscribe to carbon_reductions
     const channel = supabase.channel('leaderboard-channel')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'carbon_reductions' }, async (payload) => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'carbon_reductions' }, async (_payload) => {
         // When a new reduction arrives, fetch the entire leaderboard again to rank properly
         // In a hyper-optimized app we'd incrementally update the local state
         const { data: communities } = await supabase.from('communities').select('id, name')

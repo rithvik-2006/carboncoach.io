@@ -36,7 +36,7 @@ export interface Upload {
   image_url: string
   document_type: string | null
   processing_status: 'pending' | 'analyzing' | 'extracting' | 'calculating' | 'saving' | 'completed' | 'failed'
-  extracted_json: any | null
+  extracted_json: unknown | null
   confidence_score: number | null
   created_at: string
   updated_at: string

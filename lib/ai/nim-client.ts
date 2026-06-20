@@ -1,4 +1,4 @@
-import { ExtractionResponseSchema } from './validate-extraction'
+
 const SYSTEM_PROMPT = `You are a carbon footprint extraction system.
 
 Analyze receipts, invoices, utility bills and tickets.
@@ -32,6 +32,14 @@ Do not explain.
 Return only JSON.
 `
 
+/**
+ * Analyzes a document image (via its base64 data URL) using NVIDIA's vision model.
+ * Extracts carbon-related activities according to the predefined schema.
+ * 
+ * @param {string} dataUrl - The base64-encoded image data URL.
+ * @returns {Promise<any>} The parsed raw extraction JSON object.
+ * @throws {Error} If NVIDIA NIM API configuration is missing or the API call fails.
+ */
 export async function analyzeDocument(dataUrl: string) {
   if (!process.env.NVIDIA_NIM_API_KEY) {
     throw new Error("NVIDIA_NIM_API_KEY is not configured")
@@ -41,11 +49,6 @@ export async function analyzeDocument(dataUrl: string) {
   if (!dataUrl.startsWith("data:image")) {
     throw new Error("Invalid image format for NVIDIA Vision. Expected data URL.")
   }
-
-  console.log("NVIDIA Payload Prefix:", dataUrl.substring(0, 50))
-  console.log("NVIDIA Payload Length:", dataUrl.length)
-
-
 
   try {
     const response = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
@@ -78,24 +81,16 @@ export async function analyzeDocument(dataUrl: string) {
       })
     })
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error("========== NVIDIA ERROR ==========")
-      console.error(errorText)
-      console.error("==================================")
-      throw new Error(`NVIDIA API responded with status ${response.status}: ${errorText}`)
-    }
+  if (!response.ok) {
+    const errorText = await response.text()
+    console.error("========== NVIDIA ERROR ==========")
+    console.error(errorText)
+    console.error("==================================")
+    throw new Error(`NVIDIA API responded with status ${response.status}: ${errorText}`)
+  }
 
-    const data = await response.json()
-    console.log(
-  "RAW NVIDIA RESPONSE:",
-  JSON.stringify(data, null, 2)
-)
-    const text = data.choices?.[0]?.message?.content || ''
-    console.log(
-  "MODEL OUTPUT:",
-  data.choices?.[0]?.message?.content
-)
+  const data = await response.json()
+  const text = data.choices?.[0]?.message?.content || ''
 
     // Parse the generated text into an object
     // Strip out potential markdown code blocks

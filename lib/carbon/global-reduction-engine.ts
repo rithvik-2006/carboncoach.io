@@ -2,6 +2,17 @@ import { createClient } from '@/lib/supabase/server'
 import { feedEngine } from '../leaderboard/feed-engine'
 import { achievementEngine } from '../leaderboard/achievement-engine'
 
+/**
+ * Calculates carbon reduction amount relative to past activities and stores it globally.
+ * Triggers achievement and feed update engines if a reduction occurs.
+ * 
+ * @param {string} userId - The unique identifier of the user.
+ * @param {string | null} activityId - The unique identifier of the source activity, if applicable.
+ * @param {string} category - The category of the activity (e.g., 'Transport', 'Food').
+ * @param {number} currentCo2 - The carbon emission of the current activity in kg.
+ * @param {string} description - The description of the activity.
+ * @returns {Promise<any | null>} The created carbon reduction database record, or null if no reduction occurs or an error is encountered.
+ */
 export async function calculateAndStoreGlobalReduction(
   userId: string,
   activityId: string | null,

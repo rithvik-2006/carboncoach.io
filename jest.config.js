@@ -14,6 +14,23 @@ const config = {
     '^@/(.*)$': '<rootDir>/$1',
   },
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/e2e/'],
+  collectCoverage: true,
+  coverageDirectory: 'coverage',
+  collectCoverageFrom: [
+    'lib/utils.ts',
+    'lib/validations/**/*.ts',
+    'components/coach/chat-interface.tsx',
+    'components/ui/button.tsx',
+    'components/ui/input.tsx',
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 85,
+      functions: 85,
+      lines: 85,
+      statements: 85,
+    },
+  },
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

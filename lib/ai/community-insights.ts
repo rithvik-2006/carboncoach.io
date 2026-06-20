@@ -7,6 +7,13 @@ Highlight the biggest contributor category, the highest growth area, or recommen
 Keep it strictly under 3 sentences. Tone should be motivating and professional.
 Do not use markdown formatting or asterisks.`
 
+/**
+ * Generates community sustainability insights by analyzing community carbon reductions and achievements.
+ * Interacts with NVIDIA's meta/llama-3.1-8b-instruct NIM.
+ * 
+ * @param {string} communityId - The unique identifier of the community.
+ * @returns {Promise<string | null>} The generated community insight string, or null if generation fails or the community is not found.
+ */
 export async function generateCommunityInsight(communityId: string) {
   const supabase = await createClient()
 
@@ -18,16 +25,18 @@ export async function generateCommunityInsight(communityId: string) {
   if (!community) return null
 
   // Calculate some stats
-  const totalSaved = reductions?.reduce((sum, r) => sum + Number(r.reduction_amount), 0) || 0
-  const categories = reductions?.reduce((acc: any, r) => {
-    acc[r.category] = (acc[r.category] || 0) + Number(r.reduction_amount)
+  const totalSaved = reductions?.reduce((sum, r) => sum + Number((r as { reduction_amount: number }).reduction_amount), 0) || 0
+  const categories = (reductions || []).reduce<Record<string, number>>((acc, r) => {
+    const category = (r as { category: string }).category
+    const amount = Number((r as { reduction_amount: number }).reduction_amount)
+    acc[category] = (acc[category] || 0) + amount
     return acc
-  }, {})
+  }, {} as Record<string, number>)
 
   const contextData = {
     communityName: community.name,
     totalSavedThisPeriod: totalSaved,
-    recentAchievements: achievements?.map(a => a.badge_name),
+    recentAchievements: achievements?.map(a => (a as { badge_name: string }).badge_name),
     savingsByCategory: categories
   }
 

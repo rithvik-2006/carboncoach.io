@@ -2,6 +2,18 @@ import { createClient } from '@/lib/supabase/server'
 import { feedEngine } from '../community/feed-engine'
 import { achievementEngine } from '../community/achievement-engine'
 
+/**
+ * Computes the carbon emissions reduction for a user's activity relative to their baseline.
+ * If the reduction is positive, stores the record and updates the community feed and achievements.
+ * 
+ * @param {string} userId - The unique identifier of the user logging the reduction.
+ * @param {string} communityId - The unique identifier of the community leaderboard to update.
+ * @param {string} activityId - The unique identifier of the source activity.
+ * @param {string} category - The activity category name (e.g., 'Transport').
+ * @param {number} currentCo2 - The carbon output of the current activity.
+ * @param {string} description - The description details.
+ * @returns {Promise<any | null>} The created reduction record, or null if no savings occur.
+ */
 export async function calculateAndStoreReduction(
   userId: string,
   communityId: string,

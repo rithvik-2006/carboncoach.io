@@ -3,6 +3,11 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 
 let supabase: SupabaseClient | undefined
 
+/**
+ * Retrieves or initializes the singleton Supabase client instance for client-side operations.
+ * 
+ * @returns {SupabaseClient} The browser-side Supabase client singleton.
+ */
 export function createClient() {
   if (supabase) return supabase
 

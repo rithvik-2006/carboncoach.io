@@ -1,6 +1,17 @@
 import { createClient } from '@/lib/supabase/server'
 
+/**
+ * Activity and achievement feed broadcasting engine.
+ */
 export const feedEngine = {
+  /**
+   * Generates and logs a carbon reduction event feed entry.
+   * 
+   * @param {string} userId - The unique identifier of the user who made the reduction.
+   * @param {number} reductionAmount - The amount of carbon saved in kg.
+   * @param {string} description - Description of the activity performed.
+   * @returns {Promise<void>}
+   */
   async generateReductionFeed(userId: string, reductionAmount: number, description: string) {
     const supabase = await createClient()
 
@@ -28,6 +39,13 @@ export const feedEngine = {
       })
   },
 
+  /**
+   * Generates and logs an achievement unlock event feed entry.
+   * 
+   * @param {string} userId - The unique identifier of the user who unlocked the achievement.
+   * @param {string} badgeName - Name of the badge unlocked.
+   * @returns {Promise<void>}
+   */
   async generateAchievementFeed(userId: string, badgeName: string) {
     const supabase = await createClient()
 

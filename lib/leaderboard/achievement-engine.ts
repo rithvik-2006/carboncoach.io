@@ -10,7 +10,16 @@ const THRESHOLDS = [
   { amount: 1000, name: 'Sustainability Champion', description: 'You have saved 1000kg of CO₂!' },
 ]
 
+/**
+ * Achievement tracking engine. Calculates cumulative user reductions and unlocks achievements if milestones are reached.
+ */
 export const achievementEngine = {
+  /**
+   * Checks the user's total carbon reduction against predefined thresholds, unlocks new achievements, and logs them in the feed.
+   * 
+   * @param {string} userId - The unique identifier of the user to check achievements for.
+   * @returns {Promise<void>} Resolves when checking and updates are complete.
+   */
   async checkAndUnlockAchievements(userId: string) {
     const supabase = await createClient()
 

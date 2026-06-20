@@ -2,6 +2,12 @@ import { createClient } from '@supabase/supabase-js'
 import { subDays } from 'date-fns'
 import { unstable_cache } from 'next/cache'
 
+/**
+ * Internal helper to fetch and aggregate the global carbon reduction leaderboard.
+ * 
+ * @param {'weekly' | 'monthly' | 'all'} [timeWindow='all'] - The timeframe window to calculate rankings for.
+ * @returns {Promise<any[]>} An array containing sorted leaderboard entries with ranks.
+ */
 async function fetchGlobalLeaderboard(timeWindow: 'weekly' | 'monthly' | 'all' = 'all') {
   // Use a cookie-free client for globally cached data — no user-specific auth needed
   const supabase = createClient(
@@ -58,6 +64,11 @@ async function fetchGlobalLeaderboard(timeWindow: 'weekly' | 'monthly' | 'all' =
   return leaderboard
 }
 
+/**
+ * Cached version of fetchGlobalLeaderboard using Next.js unstable_cache.
+ * 
+ * @type {Function}
+ */
 export const getGlobalLeaderboard = unstable_cache(
   async (timeWindow: 'weekly' | 'monthly' | 'all' = 'all') => fetchGlobalLeaderboard(timeWindow),
   ['global-leaderboard'],

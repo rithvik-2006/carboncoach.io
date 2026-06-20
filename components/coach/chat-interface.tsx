@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Leaf, Send, User, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import ReactMarkdown from 'react-markdown'
@@ -65,7 +65,7 @@ export function ChatInterface() {
     setInput('')
     try {
       sendMessage({ text })
-    } catch (err) {
+    } catch {
       toast.error('Failed to send message.')
     }
   }

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { ChatInterface } from '@/components/coach/chat-interface'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { startOfMonth, endOfMonth } from 'date-fns'
 import { Lightbulb, TrendingDown, Zap, Sparkles } from 'lucide-react'
