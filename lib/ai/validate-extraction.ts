@@ -5,7 +5,7 @@ export const ExtractedActivitySchema = z.object({
   description: z.string().min(1, "Description is required"),
   amount: z.number().positive("Amount must be positive"),
   unit: z.string(),
-  metadata: z.record(z.any()).optional().default({}),
+  metadata: z.record(z.string(), z.any()).optional().default({}),
 })
 
 export const ExtractionResponseSchema = z.object({

@@ -12,6 +12,7 @@ import { Leaf, Send, User, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { toast } from 'sonner'
 
 const SUGGESTED_PROMPTS = [
   'What are my biggest carbon sources this month?',
@@ -33,11 +34,17 @@ export function ChatInterface() {
   const [input, setInput] = useState('')
   const bottomRef = useRef<HTMLDivElement>(null)
 
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({ api: '/api/coach' }),
   })
 
   const isStreaming = status === 'streaming' || status === 'submitted'
+
+  useEffect(() => {
+    if (error) {
+      toast.error('AI Coach encountered an error. Please try again later or check your connection.')
+    }
+  }, [error])
 
   useEffect(() => {
     const viewport = document.querySelector('[data-radix-scroll-area-viewport]')
@@ -56,7 +63,11 @@ export function ChatInterface() {
     const text = input.trim()
     if (!text || isStreaming) return
     setInput('')
-    sendMessage({ text })
+    try {
+      sendMessage({ text })
+    } catch (err) {
+      toast.error('Failed to send message.')
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {

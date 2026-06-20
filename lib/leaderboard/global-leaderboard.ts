@@ -1,8 +1,13 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import { subDays } from 'date-fns'
+import { unstable_cache } from 'next/cache'
 
-export async function getGlobalLeaderboard(timeWindow: 'weekly' | 'monthly' | 'all' = 'all') {
-  const supabase = await createClient()
+async function fetchGlobalLeaderboard(timeWindow: 'weekly' | 'monthly' | 'all' = 'all') {
+  // Use a cookie-free client for globally cached data — no user-specific auth needed
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   // We do this by aggregating reductions grouped by user
   const { data: profiles, error: profError } = await supabase
@@ -52,3 +57,9 @@ export async function getGlobalLeaderboard(timeWindow: 'weekly' | 'monthly' | 'a
 
   return leaderboard
 }
+
+export const getGlobalLeaderboard = unstable_cache(
+  async (timeWindow: 'weekly' | 'monthly' | 'all' = 'all') => fetchGlobalLeaderboard(timeWindow),
+  ['global-leaderboard'],
+  { revalidate: 3600, tags: ['leaderboard'] }
+)

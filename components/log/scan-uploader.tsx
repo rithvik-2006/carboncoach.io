@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import { UploadCloud, Image as ImageIcon, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import Image from 'next/image'
 
 interface ScanUploaderProps {
   onFileSelect: (file: File) => void
@@ -112,7 +113,7 @@ export function ScanUploader({ onFileSelect }: ScanUploaderProps) {
           <div className="relative aspect-video w-full bg-muted/30 flex items-center justify-center">
             {preview ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={preview} alt="Preview" className="max-h-full object-contain" />
+              <Image src={preview} alt="Preview" fill className="object-contain" />
             ) : (
               <ImageIcon className="size-12 text-muted-foreground" />
             )}
